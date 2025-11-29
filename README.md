@@ -1,5 +1,7 @@
 # Trading Engine Clean
 
+![CI](https://github.com/kevanbtc/trader1-/actions/workflows/ci.yml/badge.svg)
+
 A professional, senior-engineered Kraken CEX microstructure trading system. This repo includes live trading bots, risk management agents, and tooling to operate a lean, auditable trading workflow.
 
 ## Table of Contents
@@ -13,6 +15,7 @@ A professional, senior-engineered Kraken CEX microstructure trading system. This
 - Logs & Telemetry
 - Security & Safety
 - License
+- CI Status
 
 ## Overview
 This system focuses on Kraken exchange live trading, with microstructure signals:
@@ -92,6 +95,10 @@ Key `.env` entries:
 ## Security & Safety
 - Keys are loaded from `.env`
 - Avoid committing secrets; `.gitignore` excludes sensitive files
+
+## CI Status
+GitHub Actions CI runs lint and a syntax check on every push/PR to `main`.
+Badge at top reflects current status.
 
 ## License
 See `LICENSE`.
