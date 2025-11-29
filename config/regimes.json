@@ -1,0 +1,98 @@
+{
+  "schema_version": "1.0.0",
+  "regime_definitions": {
+    "trend": {
+      "description": "Clear directional movement with sustained momentum",
+      "indicators": {
+        "adx": { "min": 25 },
+        "trend_strength": { "min": 0.6 },
+        "consolidation_ratio": { "max": 0.3 }
+      }
+    },
+    "chop": {
+      "description": "Range-bound sideways movement with low directional conviction",
+      "indicators": {
+        "adx": { "max": 20 },
+        "consolidation_ratio": { "min": 0.5 },
+        "range_efficiency": { "max": 0.4 }
+      }
+    },
+    "breakout": {
+      "description": "Explosive moves out of consolidation with volume confirmation",
+      "indicators": {
+        "volatility_expansion": { "min": 2.0 },
+        "volume_spike": { "min": 1.8 },
+        "price_range_expansion": { "min": 1.5 }
+      }
+    },
+    "crash": {
+      "description": "Rapid downside price action with panic selling",
+      "indicators": {
+        "price_drop_1h": { "min": 0.05 },
+        "volume_spike": { "min": 3.0 },
+        "orderbook_imbalance": { "sell_ratio_min": 0.75 }
+      }
+    },
+    "high_volatility": {
+      "description": "Elevated price swings in both directions",
+      "indicators": {
+        "realized_vol_30d": { "min": 0.80 },
+        "intraday_range": { "min": 0.04 }
+      }
+    },
+    "low_volatility": {
+      "description": "Compressed price action with minimal movement",
+      "indicators": {
+        "realized_vol_30d": { "max": 0.30 },
+        "intraday_range": { "max": 0.015 }
+      }
+    },
+    "news_event": {
+      "description": "Major macro or crypto-specific event window",
+      "triggers": ["fomc", "cpi", "etf_decision", "protocol_upgrade", "exploit", "regulation"]
+    },
+    "exchange_outage": {
+      "description": "Exchange downtime or degraded performance",
+      "triggers": ["api_errors", "withdrawal_suspension", "trading_halt"]
+    },
+    "network_congestion": {
+      "description": "Blockchain congestion affecting on-chain operations",
+      "indicators": {
+        "gas_price_spike": { "min": 2.0 },
+        "mempool_backlog": { "min": 100000 }
+      }
+    }
+  },
+  "volatility_buckets": {
+    "LOW": {
+      "realized_vol_range": [0.0, 0.30],
+      "typical_intraday_range": [0.0, 0.015]
+    },
+    "LOW_MEDIUM": {
+      "realized_vol_range": [0.25, 0.50],
+      "typical_intraday_range": [0.012, 0.025]
+    },
+    "MEDIUM_HIGH": {
+      "realized_vol_range": [0.45, 0.80],
+      "typical_intraday_range": [0.020, 0.045]
+    },
+    "HIGH_ONLY": {
+      "realized_vol_range": [0.75, 3.0],
+      "typical_intraday_range": [0.040, 0.150]
+    }
+  },
+  "event_sensitivity_levels": {
+    "LOW": {
+      "description": "Strategy is resilient to events, minimal adjustments needed",
+      "action": "continue"
+    },
+    "MEDIUM": {
+      "description": "Strategy should reduce size during high-impact events",
+      "action": "downsize_50pct"
+    },
+    "HIGH": {
+      "description": "Strategy should halt or go to SHADOW mode during events",
+      "action": "pause_or_shadow"
+    }
+  }
+}

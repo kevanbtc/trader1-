@@ -1,0 +1,420 @@
+# ⚡ UNYKORN SYSTEMS API MANIFEST
+# FETCHER-X: Complete Production Infrastructure Map
+# Generated: 2025-11-25
+# Purpose: Full API stack for live arbitrage + .gold + TGUSD + NFT systems
+
+---
+# 🔹 1. RPC LAYER (MANDATORY - DO NOT USE FREE RPCS)
+rpc_providers:
+  primary:
+    provider: "Alchemy"
+    chain: "arbitrum"
+    features:
+      - "WebSocket streaming"
+      - "Archive node access"
+      - "Mempool subscription"
+      - "500+ req/sec"
+    endpoints:
+      http: "https://arb-mainnet.g.alchemy.com/v2/{ALCHEMY_API_KEY}"
+      websocket: "wss://arb-mainnet.g.alchemy.com/v2/{ALCHEMY_API_KEY}"
+    pricing: "$199/month Growth Plan (50M compute units)"
+    signup: "https://dashboard.alchemy.com"
+    
+  secondary:
+    provider: "QuickNode"
+    chain: "arbitrum"
+    features:
+      - "Ultra-low latency"
+      - "99.9% uptime SLA"
+      - "Dedicated endpoint"
+      - "2000 req/sec"
+    endpoints:
+      http: "https://{QUICKNODE_ENDPOINT}.arbitrum-mainnet.quiknode.pro/{QUICKNODE_API_KEY}"
+      websocket: "wss://{QUICKNODE_ENDPOINT}.arbitrum-mainnet.quiknode.pro/{QUICKNODE_API_KEY}"
+    pricing: "$299/month Build Plan"
+    signup: "https://dashboard.quicknode.com"
+    
+  backup:
+    provider: "Chainstack"
+    chain: "arbitrum"
+    features:
+      - "Elastic nodes"
+      - "Load balancing"
+      - "Global endpoints"
+    endpoints:
+      http: "https://nd-{NODE_ID}.p2pify.com/{CHAINSTACK_API_KEY}"
+      websocket: "wss://ws-nd-{NODE_ID}.p2pify.com/{CHAINSTACK_API_KEY}"
+    pricing: "$199/month Business"
+    signup: "https://console.chainstack.com"
+
+  flashbots_rpc:
+    provider: "Flashbots Protect"
+    purpose: "MEV-protected transaction submission"
+    features:
+      - "Private mempool"
+      - "No frontrunning"
+      - "Bundle submission"
+      - "Free to use"
+    endpoints:
+      http: "https://rpc.flashbots.net"
+      fast: "https://rpc.flashbots.net/fast"
+    docs: "https://docs.flashbots.net/flashbots-protect/rpc/quick-start"
+    requirements: "None (public endpoint)"
+
+---
+# 🔹 2. PRICING / MARKET DATA LAYER
+pricing_apis:
+  coingecko_pro:
+    provider: "CoinGecko Pro"
+    purpose: "Off-chain price cross-checking"
+    features:
+      - "Real-time prices"
+      - "Historical data"
+      - "Exchange volume"
+      - "500 calls/min"
+    endpoints:
+      base: "https://pro-api.coingecko.com/api/v3"
+      price: "/simple/price"
+      market: "/coins/markets"
+    auth: "x-cg-pro-api-key: {COINGECKO_API_KEY}"
+    pricing: "$129/month Analyst Plan"
+    signup: "https://www.coingecko.com/en/api/pricing"
+    
+  chainlink_feeds:
+    provider: "Chainlink Price Feeds"
+    purpose: "On-chain oracle prices"
+    type: "Smart Contract"
+    arbitrum_feeds:
+      ETH_USD: "0x639Fe6ab55C921f74e7fac1ee960C0B6293ba612"
+      BTC_USD: "0x6ce185860a4963106506C203335A2910413708e9"
+      LINK_USD: "0x86E53CF1B870786351Da77A57575e79CB55812CB"
+    docs: "https://docs.chain.link/data-feeds/price-feeds/addresses?network=arbitrum"
+    cost: "Free (on-chain reads)"
+    
+  uniswap_api:
+    provider: "Uniswap V3 Subgraph"
+    purpose: "Pool state, volume, liquidity"
+    endpoints:
+      arbitrum: "https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v3-arbitrum"
+    queries:
+      - "pool reserves"
+      - "24h volume"
+      - "recent swaps"
+    cost: "Free (rate-limited)"
+    backup: "https://gateway-arbitrum.network.thegraph.com/api/{GRAPH_API_KEY}/subgraphs/id/{SUBGRAPH_ID}"
+    
+  oneinch_api:
+    provider: "1inch API"
+    purpose: "DEX aggregation, best routes"
+    features:
+      - "Swap routing"
+      - "Price comparison"
+      - "Liquidity sources"
+    endpoints:
+      base: "https://api.1inch.dev"
+      swap: "/swap/v6.0/42161"  # 42161 = Arbitrum
+      quote: "/swap/v6.0/42161/quote"
+    auth: "Authorization: Bearer {ONEINCH_API_KEY}"
+    pricing: "$50/month Hobbyist (100 req/sec)"
+    signup: "https://portal.1inch.dev"
+    
+  kaiko_market_data:
+    provider: "Kaiko"
+    purpose: "Institutional-grade pricing"
+    features:
+      - "Exchange order books"
+      - "Trade history"
+      - "Market depth"
+    endpoints:
+      base: "https://us.market-api.kaiko.io/v2"
+      trades: "/data/trades.v1/exchanges/{exchange}/spot/{pair}/trades"
+    auth: "X-Api-Key: {KAIKO_API_KEY}"
+    pricing: "$299/month (optional - advanced only)"
+    signup: "https://www.kaiko.com"
+
+---
+# 🔹 3. TRANSACTION EXECUTION LAYER
+execution_apis:
+  flashbots_bundle:
+    provider: "Flashbots Relay"
+    purpose: "Private bundle submission"
+    features:
+      - "MEV protection"
+      - "Bundle atomicity"
+      - "Backrun protection"
+    endpoints:
+      relay: "https://relay.flashbots.net"
+      simulate: "https://relay.flashbots.net/simulate"
+    auth: "X-Flashbots-Signature (signed with private key)"
+    methods:
+      - "eth_sendBundle"
+      - "eth_callBundle"
+      - "flashbots_getBundleStats"
+    docs: "https://docs.flashbots.net/flashbots-auction/advanced/rpc-endpoint"
+    cost: "Free (pays via priority fee)"
+    
+  eden_network:
+    provider: "Eden Network"
+    purpose: "Alternative MEV protection"
+    features:
+      - "Priority slot auction"
+      - "Lower sandwich risk"
+    endpoints:
+      rpc: "https://api.edennetwork.io/v1/{EDEN_API_KEY}"
+    pricing: "Free (optional upgrade)"
+    signup: "https://docs.edennetwork.io"
+    
+  safe_transaction_api:
+    provider: "Gnosis Safe API"
+    purpose: "Multi-sig wallet management"
+    features:
+      - "Transaction proposals"
+      - "Auto-execution modules"
+      - "Spending limits"
+    endpoints:
+      arbitrum: "https://safe-transaction-arbitrum.safe.global/api/v1"
+      propose: "/safes/{safe_address}/multisig-transactions/"
+      status: "/multisig-transactions/{safe_tx_hash}/"
+    docs: "https://docs.safe.global/safe-core-api/available-services"
+    cost: "Free (public API)"
+
+---
+# 🔹 4. WALLET / SIGNING LAYER
+wallet_apis:
+  safe_core_sdk:
+    provider: "Safe{Core} SDK"
+    purpose: "Programmatic Safe management"
+    language: "TypeScript/Python"
+    features:
+      - "Transaction creation"
+      - "Off-chain signing"
+      - "Module integration"
+    install:
+      npm: "@safe-global/api-kit @safe-global/protocol-kit"
+      pip: "safe-eth-py"
+    docs: "https://docs.safe.global/sdk/overview"
+    
+  web3_signer:
+    provider: "Local Key Management"
+    purpose: "Private key signing (isolated)"
+    security:
+      - "Store in encrypted keystore"
+      - "Never commit to git"
+      - "Use hardware wallet for high-value"
+    libraries:
+      - "eth_account (Python)"
+      - "ethers.js Wallet (Node)"
+      
+  fireblocks_api:
+    provider: "Fireblocks"
+    purpose: "MPC wallet (enterprise)"
+    features:
+      - "No private keys"
+      - "Multi-party computation"
+      - "Policy engine"
+    endpoints:
+      base: "https://api.fireblocks.io/v1"
+    pricing: "$5k/year (optional - high-security only)"
+    signup: "https://www.fireblocks.com"
+
+---
+# 🔹 5. MONITORING / SUPERVISOR LAYER
+monitoring_apis:
+  telegram_bot:
+    provider: "Telegram Bot API"
+    purpose: "Real-time alerts + kill-switch"
+    features:
+      - "Trade notifications"
+      - "Error alerts"
+      - "Manual override commands"
+    endpoints:
+      base: "https://api.telegram.org/bot{BOT_TOKEN}"
+      send: "/sendMessage"
+    setup:
+      - "Create bot via @BotFather"
+      - "Get chat_id via /getUpdates"
+    cost: "Free"
+    
+  discord_webhook:
+    provider: "Discord"
+    purpose: "Trade logs + performance dashboard"
+    features:
+      - "Rich embeds"
+      - "File uploads"
+      - "Thread support"
+    endpoints:
+      webhook: "https://discord.com/api/webhooks/{WEBHOOK_ID}/{WEBHOOK_TOKEN}"
+    cost: "Free"
+    
+  datadog_apm:
+    provider: "Datadog"
+    purpose: "Performance monitoring (optional)"
+    features:
+      - "Request tracing"
+      - "Error tracking"
+      - "Custom metrics"
+    endpoints:
+      base: "https://api.datadoghq.com/api/v1"
+    pricing: "$15/host/month (optional)"
+    
+  sentry_io:
+    provider: "Sentry"
+    purpose: "Error tracking + crash reports"
+    features:
+      - "Exception capture"
+      - "Stack traces"
+      - "Performance monitoring"
+    endpoints:
+      dsn: "https://{KEY}@{ORGANIZATION}.ingest.sentry.io/{PROJECT_ID}"
+    pricing: "Free tier (5k events/month)"
+    signup: "https://sentry.io"
+
+---
+# 🔹 6. GAS ORACLE / NETWORK LAYER
+gas_apis:
+  arbiscan_gas:
+    provider: "Arbiscan"
+    purpose: "Real-time Arbitrum gas prices"
+    endpoints:
+      api: "https://api.arbiscan.io/api"
+      gas: "?module=gastracker&action=gasoracle"
+    auth: "apikey={ARBISCAN_API_KEY}"
+    cost: "Free tier (5 calls/sec)"
+    signup: "https://arbiscan.io/apis"
+    
+  blocknative_gas:
+    provider: "Blocknative"
+    purpose: "Gas price predictions"
+    features:
+      - "Next 5 blocks forecast"
+      - "Confidence intervals"
+    endpoints:
+      base: "https://api.blocknative.com/gasprices/blockprices"
+    auth: "Authorization: {BLOCKNATIVE_API_KEY}"
+    pricing: "$49/month Starter"
+    signup: "https://www.blocknative.com"
+
+---
+# 🔹 7. ADDITIONAL INTEGRATIONS
+additional:
+  the_graph:
+    provider: "The Graph"
+    purpose: "Indexing + subgraph queries"
+    endpoints:
+      hosted: "https://api.thegraph.com/subgraphs/name/{USER}/{SUBGRAPH}"
+      decentralized: "https://gateway-arbitrum.network.thegraph.com/api/{API_KEY}/subgraphs/id/{SUBGRAPH_ID}"
+    pricing: "Free hosted / $4 per 100k queries decentralized"
+    
+  infura_ipfs:
+    provider: "Infura IPFS"
+    purpose: "Metadata storage for NFTs"
+    endpoints:
+      api: "https://ipfs.infura.io:5001/api/v0"
+      gateway: "https://{PROJECT_ID}.ipfs.infura-ipfs.io/ipfs/{CID}"
+    pricing: "Free tier (5GB storage)"
+    
+  etherscan_verify:
+    provider: "Arbiscan Contract Verification"
+    purpose: "Verify smart contracts"
+    endpoints:
+      api: "https://api.arbiscan.io/api?module=contract&action=verifysourcecode"
+    auth: "apikey={ARBISCAN_API_KEY}"
+
+---
+# 📊 COST SUMMARY (Monthly)
+estimated_monthly_costs:
+  required:
+    alchemy_growth: "$199"
+    quicknode_build: "$299"
+    coingecko_pro: "$129"
+    oneinch_api: "$50"
+    total_required: "$677/month"
+    
+  optional:
+    chainstack_backup: "$199"
+    kaiko_market_data: "$299"
+    blocknative_gas: "$49"
+    datadog_monitoring: "$15"
+    total_optional: "$562/month"
+    
+  grand_total: "$1,239/month (all providers)"
+  recommended_start: "$677/month (required only)"
+  
+  roi_breakeven:
+    description: "With $10k capital at 5% daily return"
+    daily_profit: "$500"
+    monthly_profit: "$15,000"
+    breakeven_days: "1.35 days"
+    note: "API costs are negligible compared to arbitrage profits"
+
+---
+# 🚀 ACTIVATION CHECKLIST
+deployment_steps:
+  - step: 1
+    action: "Sign up for Alchemy Growth Plan"
+    priority: "CRITICAL"
+    
+  - step: 2
+    action: "Sign up for QuickNode Build Plan"
+    priority: "CRITICAL"
+    
+  - step: 3
+    action: "Create CoinGecko Pro account"
+    priority: "HIGH"
+    
+  - step: 4
+    action: "Get 1inch API key"
+    priority: "HIGH"
+    
+  - step: 5
+    action: "Create Telegram bot for alerts"
+    priority: "MEDIUM"
+    
+  - step: 6
+    action: "Set up Gnosis Safe wallet"
+    priority: "HIGH"
+    
+  - step: 7
+    action: "Configure Flashbots Protect RPC"
+    priority: "CRITICAL"
+    
+  - step: 8
+    action: "Get Arbiscan API key (free)"
+    priority: "LOW"
+    
+  - step: 9
+    action: "Deploy to testnet first"
+    priority: "CRITICAL"
+    
+  - step: 10
+    action: "Run 1-hour validation"
+    priority: "CRITICAL"
+    
+  - step: 11
+    action: "Go live with $500 capital"
+    priority: "FINAL"
+
+---
+# ⚠️ SECURITY NOTES
+security:
+  - "NEVER commit API keys to git"
+  - "Use .env files + .gitignore"
+  - "Rotate keys every 90 days"
+  - "Enable IP whitelisting where possible"
+  - "Use Gnosis Safe with spending limits"
+  - "Start with testnet (Arbitrum Sepolia)"
+  - "Monitor first 24 hours closely"
+  - "Keep 80% capital in cold storage"
+  - "Only trade with 20% active capital"
+
+---
+# 📚 DOCUMENTATION LINKS
+docs:
+  alchemy: "https://docs.alchemy.com/docs/getting-started"
+  quicknode: "https://www.quicknode.com/docs"
+  flashbots: "https://docs.flashbots.net"
+  safe: "https://docs.safe.global"
+  chainlink: "https://docs.chain.link"
+  uniswap: "https://docs.uniswap.org"
+  web3py: "https://web3py.readthedocs.io"
+  telegram_bot: "https://core.telegram.org/bots/api"

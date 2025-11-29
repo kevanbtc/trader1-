@@ -1,0 +1,73 @@
+{
+  "chain": "BSC",
+  "chain_id": 56,
+  "rpc_endpoints": [
+    "https://bsc-dataseed1.binance.org",
+    "https://bsc-dataseed2.binance.org",
+    "https://bsc-dataseed3.binance.org",
+    "https://bsc-dataseed4.binance.org",
+    "https://bsc-dataseed1.defibit.io",
+    "https://bsc-dataseed2.defibit.io"
+  ],
+  "gas_config": {
+    "max_gas_gwei": 5.0,
+    "typical_gas_gwei": 3.0,
+    "fast_gas_gwei": 5.0,
+    "average_tx_cost_usd": 0.02
+  },
+  "dexes": {
+    "PancakeSwap_V2": {
+      "factory": "0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73",
+      "router": "0x10ED43C718714eb63d5aA57B78B54704E256024E",
+      "fee_bps": 25
+    },
+    "PancakeSwap_V3": {
+      "factory": "0x0BFbCF9fa4f9C56B0F40a671Ad40E0805A091865",
+      "router": "0x13f4EA83D0bd40E75C8222255bc855a974568Dd4",
+      "quoter": "0xB048Bbc1Ee6b733FFfCFb9e9CeF7375518e25997",
+      "fee_tiers": [100, 500, 2500, 10000]
+    },
+    "BiSwap": {
+      "factory": "0x858E3312ed3A876947EA49d572A7C42DE08af7EE",
+      "router": "0x3a6d8cA21D1CF76F653A67577FA0D27453350dD8",
+      "fee_bps": 20
+    },
+    "ApeSwap": {
+      "factory": "0x0841BD0B734E4F5853f0dD8d7Ea041c241fb0Da6",
+      "router": "0xcF0feBd3f17CEf5b47b0cD257aCf6025c5BFf3b7",
+      "fee_bps": 20
+    },
+    "BabySwap": {
+      "factory": "0x86407bEa2078ea5f5EB5A52B2caA963bC1F889Da",
+      "router": "0x325E343f1dE602396E256B67eFd1F61C3A6B38Bd",
+      "fee_bps": 10
+    },
+    "MDEX": {
+      "factory": "0x3CD1C46068dAEa5Ebb0d3f55F6915B10648062B8",
+      "router": "0x7DAe51BD3E3376B8c7c4900E9107f12Be3AF1bA8",
+      "fee_bps": 30
+    }
+  },
+  "stablecoins": {
+    "USDT": "0x55d398326f99059fF775485246999027B3197955",
+    "USDC": "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d",
+    "BUSD": "0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56",
+    "DAI": "0x1AF3F329e8BE154074D8769D1FFa4eE058B1DBc3"
+  },
+  "major_tokens": {
+    "WBNB": "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
+    "ETH": "0x2170Ed0880ac9A755fd29B2688956BD959F933F8",
+    "BTCB": "0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c",
+    "CAKE": "0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82",
+    "XRP": "0x1D2F0da169ceB9fC7B3144628dB156f3F6c60dBE",
+    "ADA": "0x3EE2200Efb3400fAbB9AacF31297cBdD1d435D47"
+  },
+  "scan_config": {
+    "scan_interval_ms": 250,
+    "enable_mempool": false,
+    "enable_drift_detection": true,
+    "enable_shock_detection": true,
+    "enable_stablecoin_arb": true,
+    "enable_triangular_arb": true
+  }
+}

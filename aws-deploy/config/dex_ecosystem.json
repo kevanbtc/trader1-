@@ -1,0 +1,85 @@
+{
+  "arbitrum_dex_ecosystem": {
+    "uniswap_v3": {
+      "enabled": true,
+      "factory": "0x1F98431c8aD98523631AE4a59f267346ea31F984",
+      "router": "0xE592427A0AEce92De3Edee1F18E0157C05861564",
+      "quoter": "0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6",
+      "fee_tiers": [100, 500, 3000, 10000],
+      "priority": 1
+    },
+    "sushiswap_v2": {
+      "enabled": true,
+      "factory": "0xc35DADB65012eC5796536bD9864eD8773aBc74C4",
+      "router": "0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506",
+      "fee": 3000,
+      "priority": 2
+    },
+    "curve": {
+      "enabled": true,
+      "registry": "0x0E9B5B092caD6F1c5E6bc7f89Ffe1abb5c95F1C2",
+      "priority": 3,
+      "pools": {
+        "2crv": "0x7f90122BF0700F9E7e1F688fe926940E8839F353",
+        "tricrypto": "0x960ea3e3C7FB317332d990873d354E18d7645590",
+        "fraxusdc": "0xC9B8a3FDECB9D5b218d02555a8Baf332E5B740d5"
+      }
+    },
+    "camelot_v2": {
+      "enabled": true,
+      "factory": "0x6EcCab422D763aC031210895C81787E87B43A652",
+      "router": "0xc873fEcbd354f5A56E00E710B90EF4201db2448d",
+      "fee": 3000,
+      "priority": 4,
+      "supports_low_fee": true,
+      "low_fee_pools": 10
+    },
+    "camelot_v3": {
+      "enabled": true,
+      "factory": "0x1a3c9B1d2F0529D97f2afC5136Cc23e58f1FD35B",
+      "router": "0x00e2059d738d1c5c7a5e9edcae5c57e8b8b6c8f8",
+      "fee_tiers": [50, 100, 500, 3000],
+      "priority": 5
+    },
+    "balancer_v2": {
+      "enabled": true,
+      "vault": "0xBA12222222228d8Ba445958a75a0704d566BF2C8",
+      "pool_types": ["weighted", "stable", "composable"],
+      "priority": 6
+    },
+    "traderjoe_v2": {
+      "enabled": true,
+      "factory": "0x8e42f2F4101563bF679975178e880FD87d3eFd4e",
+      "router": "0xb4315e873dBcf96Ffd0acd8EA43f689D8c20fB30",
+      "bin_step": [15, 25, 100],
+      "priority": 7
+    },
+    "ramses_v2": {
+      "enabled": true,
+      "factory": "0xAA2cd7477c451E703f3B9Ba5663334914763edF8",
+      "router": "0xAA23611badAFB62D37E7295A682D21960ac85A90",
+      "fee_tiers": [100, 500, 3000],
+      "priority": 8
+    },
+    "kyberswap_elastic": {
+      "enabled": true,
+      "factory": "0x5F1dddbf348aC2fbe22a163e30F99F9ECE3DD50a",
+      "router": "0xC1e7dFE73E1598E3910EF4C7845B68A9Ab6F4c83",
+      "fee_tiers": [8, 10, 40, 300, 1000],
+      "priority": 9
+    }
+  },
+  "scanning_strategy": {
+    "parallel_scan": true,
+    "max_concurrent_pools": 50,
+    "cache_ttl_ms": 500,
+    "min_liquidity_usd": 5000,
+    "max_price_impact_bps": 50
+  },
+  "execution_preferences": {
+    "route_splitting": true,
+    "max_hops": 2,
+    "prefer_direct_routes": true,
+    "aggregate_quotes": true
+  }
+}

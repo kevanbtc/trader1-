@@ -1,0 +1,253 @@
+{
+  "schema_version": "2.0.0",
+  "mode": "AGGRESSIVE_OVERNIGHT",
+  "last_updated": "2025-11-25T00:00:00Z",
+  "trading_period": {
+    "start": "2025-11-25T20:00:00Z",
+    "end": "2025-11-26T12:00:00Z",
+    "duration_hours": 16
+  },
+  "capital_allocation": {
+    "total_usd": 39.44,
+    "reserved_for_gas_usd": 10.35,
+    "active_trading_usd": 29.09,
+    "max_single_position_usd": 20
+  },
+  "chains": {
+    "ARBITRUM": {
+      "chain_id": 42161,
+      "rpc_url": "https://arb1.arbitrum.io/rpc",
+      "explorer": "https://arbiscan.io"
+    }
+  },
+  "aggressive_bots": [
+    {
+      "id": "BOT_OVERNIGHT_UNIV3_SCALP_V1",
+      "version": 1,
+      "parent_bot_id": null,
+      "lineage_label": "AGGRESSIVE_SCALP",
+      "strategy_family": "uniswap_v3_scalping",
+      "status": "ON",
+      "mode": "AGGRESSIVE_PRODUCTION",
+      "execution_mode": "PAPER",
+      "account_group": "OVERNIGHT_SCALP",
+      "base_asset": "WETH",
+      "quote_asset": "USDC",
+      "venue": "UNISWAP_V3",
+      "chains": ["ARBITRUM"],
+      "timeframe": "tick",
+      "max_notional": 16,
+      "max_leverage": 1.0,
+      "target_capital_fraction": 0.55,
+      "risk": {
+        "max_drawdown": 0.20,
+        "intraday_dd_limit": 0.15,
+        "daily_dd_limit": 0.25,
+        "kill_switch_enabled": true,
+        "max_gas_cost_bps": 50,
+        "min_profit_after_gas_bps": 10,
+        "max_consecutive_losses": 3
+      },
+      "params": {
+        "pool": "WETH/USDC-0.05",
+        "min_profit_bps": 15,
+        "max_slippage_bps": 100,
+        "gas_price_ceiling_gwei": 0.5,
+        "tick_monitoring_interval_ms": 1000,
+        "execution_speed": "CONSERVATIVE",
+        "flashbots_enabled": false,
+        "order_size_usd_range": [8, 16],
+        "max_trades_per_hour": 5,
+        "cooldown_after_loss_seconds": 60
+      },
+      "designed_for_regimes": ["any"],
+      "forbidden_regimes": ["crash", "network_congestion"],
+      "regime_profile": {
+        "volatility_bucket": "LOW_MEDIUM",
+        "event_sensitivity": "LOW",
+        "time_windows_utc": [
+          { "start": "20:00", "end": "23:59" },
+          { "start": "00:00", "end": "12:00" }
+        ],
+        "gas_sensitivity": "MEDIUM"
+      },
+      "experiment": {
+        "cohort": "AGGRESSIVE_OVERNIGHT_001",
+        "parent_bot_id": null,
+        "hypothesis": "Overnight period has lower MEV competition and predictable arbitrage opportunities on Arbitrum",
+        "start_ts": "2025-11-25T20:00:00Z",
+        "end_ts": "2025-11-26T12:00:00Z"
+      },
+      "telemetry": {
+        "label": "Aggressive Overnight Uniswap V3 Scalper",
+        "tags": ["aggressive", "overnight", "scalping", "arbitrum", "experimental"],
+        "alert_channel": "telegram:@unykorn_ops"
+      }
+    },
+    {
+      "id": "BOT_OVERNIGHT_CROSS_DEX_ARB_V1",
+      "version": 1,
+      "parent_bot_id": null,
+      "lineage_label": "AGGRESSIVE_CROSS_ARB",
+      "strategy_family": "cross_dex_arbitrage",
+      "status": "ON",
+      "mode": "AGGRESSIVE_PRODUCTION",
+      "execution_mode": "PAPER",
+      "account_group": "OVERNIGHT_ARB",
+      "base_asset": "MULTI",
+      "quote_asset": "MULTI",
+      "venue": "UNISWAP_V3,SUSHISWAP,CURVE",
+      "chains": ["ARBITRUM"],
+      "timeframe": "tick",
+      "max_notional": 13,
+      "max_leverage": 1.0,
+      "target_capital_fraction": 0.45,
+      "risk": {
+        "max_drawdown": 0.20,
+        "intraday_dd_limit": 0.15,
+        "daily_dd_limit": 0.25,
+        "kill_switch_enabled": true,
+        "max_gas_cost_bps": 50,
+        "min_profit_after_gas_bps": 10,
+        "max_consecutive_losses": 3
+      },
+      "params": {
+        "dexes": ["UNISWAP_V3", "SUSHISWAP"],
+        "token_whitelist": [
+          "WETH", "USDC", "USDT", "ARB"
+        ],
+        "min_profit_bps": 20,
+        "max_slippage_bps": 100,
+        "gas_price_ceiling_gwei": 0.5,
+        "flashloan_enabled": false,
+        "route_discovery": "simple",
+        "max_hops": 2,
+        "execution_deadline_seconds": 30,
+        "liquidity_threshold_usd": 5000,
+        "price_impact_max_bps": 100,
+        "scan_frequency_ms": 2000,
+        "concurrent_opportunities": 1
+      },
+      "designed_for_regimes": ["any"],
+      "forbidden_regimes": ["crash", "network_congestion"],
+      "regime_profile": {
+        "volatility_bucket": "MEDIUM_HIGH",
+        "event_sensitivity": "LOW",
+        "time_windows_utc": [
+          { "start": "20:00", "end": "23:59" },
+          { "start": "00:00", "end": "12:00" }
+        ],
+        "gas_sensitivity": "MEDIUM"
+      },
+      "experiment": {
+        "cohort": "AGGRESSIVE_OVERNIGHT_001",
+        "parent_bot_id": null,
+        "hypothesis": "Overnight arbitrage opportunities persist longer due to reduced bot competition",
+        "start_ts": "2025-11-25T20:00:00Z",
+        "end_ts": "2025-11-26T12:00:00Z"
+      },
+      "telemetry": {
+        "label": "Aggressive Overnight Cross-DEX Arbitrage",
+        "tags": ["aggressive", "overnight", "cross_dex", "arbitrum", "experimental"],
+        "alert_channel": "telegram:@unykorn_ops"
+      }
+    },
+    {
+      "id": "BOT_OVERNIGHT_MOMENTUM_V1",
+      "version": 1,
+      "parent_bot_id": null,
+      "lineage_label": "AGGRESSIVE_MOMENTUM",
+      "strategy_family": "momentum_breakout",
+      "status": "OFF",
+      "mode": "AGGRESSIVE_PRODUCTION",
+      "execution_mode": "PAPER",
+      "account_group": "OVERNIGHT_MOMENTUM",
+      "base_asset": "WETH",
+      "quote_asset": "USDC",
+      "venue": "UNISWAP_V3",
+      "chains": ["ARBITRUM"],
+      "timeframe": "5m",
+      "max_notional": 2000,
+      "max_leverage": 1.0,
+      "target_capital_fraction": 0.20,
+      "risk": {
+        "max_drawdown": 0.12,
+        "intraday_dd_limit": 0.06,
+        "daily_dd_limit": 0.10,
+        "kill_switch_enabled": true,
+        "max_gas_cost_bps": 35,
+        "min_profit_after_gas_bps": 8,
+        "max_consecutive_losses": 4
+      },
+      "params": {
+        "pool": "WETH/USDC-0.3",
+        "momentum_threshold_bps": 50,
+        "volume_surge_multiplier": 2.0,
+        "entry_delay_seconds": 10,
+        "take_profit_bps": 150,
+        "stop_loss_bps": 75,
+        "trailing_stop_enabled": true,
+        "trailing_stop_distance_bps": 50,
+        "max_hold_time_minutes": 60,
+        "rsi_overbought": 70,
+        "rsi_oversold": 30
+      },
+      "designed_for_regimes": ["breakout", "trend", "high_volatility"],
+      "forbidden_regimes": ["crash", "network_congestion", "chop"],
+      "regime_profile": {
+        "volatility_bucket": "MEDIUM_HIGH",
+        "event_sensitivity": "MEDIUM",
+        "time_windows_utc": [
+          { "start": "20:00", "end": "23:59" },
+          { "start": "00:00", "end": "12:00" }
+        ],
+        "gas_sensitivity": "LOW"
+      },
+      "experiment": {
+        "cohort": "AGGRESSIVE_OVERNIGHT_001",
+        "parent_bot_id": null,
+        "hypothesis": "Overnight momentum moves are cleaner with fewer false breakouts",
+        "start_ts": "2025-11-25T20:00:00Z",
+        "end_ts": "2025-11-26T12:00:00Z"
+      },
+      "telemetry": {
+        "label": "Aggressive Overnight Momentum Breakout",
+        "tags": ["aggressive", "overnight", "momentum", "arbitrum", "experimental"],
+        "alert_channel": "telegram:@unykorn_ops"
+      }
+    }
+  ],
+  "global_controls": {
+    "emergency_shutdown_triggers": {
+      "max_portfolio_drawdown_pct": 25,
+      "max_hourly_loss_usd": 5,
+      "gas_price_spike_gwei": 1.0,
+      "consecutive_failed_trades": 3
+    },
+    "profit_taking": {
+      "target_overnight_return_pct": 10,
+      "reduce_size_at_profit_pct": 5,
+      "full_exit_at_profit_pct": 15
+    },
+    "monitoring": {
+      "health_check_interval_seconds": 30,
+      "performance_log_interval_seconds": 300,
+      "telegram_alert_on_trade": true,
+      "telegram_alert_on_profit_threshold": 50
+    },
+    "risk_layer": {
+      "max_session_loss_pct": 20.0,
+      "max_daily_loss_pct": 25.0,
+      "kill_switch_file": "state/kill_switch.flag",
+      "equity_reference": "manual",
+      "manual_equity_usd": 29.09
+    }
+  },
+  "execution_notes": {
+    "mode": "PAPER",
+    "reason": "MUST BACKTEST AND VALIDATE BEFORE LIVE. Run in PAPER mode first to collect 4-8 hours of performance data.",
+    "transition_to_live": "Only after: (1) Positive Sharpe ratio, (2) Max DD < 8%, (3) Win rate > 55%, (4) Min 20 trades executed",
+    "risk_warning": "Aggressive overnight trading carries high risk. Start with PAPER mode. Use ONLY risk capital you can afford to lose.",
+    "recommended_capital": "Start with $1,000-$2,000 for LIVE mode after validation. Scale up gradually."
+  }
+}

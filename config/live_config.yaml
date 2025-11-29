@@ -1,0 +1,359 @@
+# Live Trading Engine Configuration
+# Complete production settings for LIVE execution mode
+
+# ============================================================================
+# RPC PROVIDERS (Multi-Provider Load Balancing)
+# ============================================================================
+rpc_providers:
+  # Use 5+ providers for maximum uptime and block freshness
+  ethereum:
+    alchemy: "https://eth-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY}"
+    infura: "https://mainnet.infura.io/v3/${INFURA_API_KEY}"
+    quicknode: "${QUICKNODE_HTTPS}"
+    chainstack: "${CHAINSTACK_HTTPS}"
+    ankr: "https://rpc.ankr.com/eth"
+    publicnode: "https://ethereum.publicnode.com"
+  
+  arbitrum:
+    alchemy: "https://arb-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY}"
+    infura: "https://arbitrum-mainnet.infura.io/v3/${INFURA_API_KEY}"
+    quicknode: "${QUICKNODE_ARBITRUM}"
+    public: "https://arb1.arbitrum.io/rpc"
+    cloudflare: "https://cloudflare-eth.com/v1/arbitrum"
+
+  polygon:
+    alchemy: "https://polygon-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY}"
+    infura: "https://polygon-mainnet.infura.io/v3/${INFURA_API_KEY}"
+    quicknode: "${QUICKNODE_POLYGON}"
+    ankr: "https://rpc.ankr.com/polygon"
+
+# RPC selection criteria
+rpc_selection:
+  block_freshness_threshold_ms: 500  # Switch if block older than 500ms
+  ping_interval_ms: 200              # Check providers every 200ms
+  max_consecutive_failures: 5        # Disable after 5 failures
+  latency_weight: 0.4                # 40% weight on latency
+  success_rate_weight: 0.3           # 30% weight on success rate
+  freshness_weight: 0.2              # 20% weight on block freshness
+  availability_weight: 0.1           # 10% weight on availability
+
+# ============================================================================
+# WALLET ROTATION (MEV Protection)
+# ============================================================================
+wallet_rotation:
+  enabled: true
+  min_rotation_seconds: 420   # 7 minutes
+  max_rotation_seconds: 900   # 15 minutes
+  min_balance_eth: 0.01       # Alert if below this
+  max_consecutive_failures: 3 # Disable wallet after failures
+  
+  # Wallet addresses (private keys in .env)
+  wallets:
+    - address: "${EOA1_ADDRESS}"
+      private_key_env: "EOA1_PRIVATE_KEY"
+    - address: "${EOA2_ADDRESS}"
+      private_key_env: "EOA2_PRIVATE_KEY"
+    - address: "${EOA3_ADDRESS}"
+      private_key_env: "EOA3_PRIVATE_KEY"
+    - address: "${EOA4_ADDRESS}"
+      private_key_env: "EOA4_PRIVATE_KEY"
+
+# ============================================================================
+# GAS SENTINEL (Continuous Monitoring)
+# ============================================================================
+gas_sentinel:
+  enabled: true
+  check_interval_seconds: 10
+  
+  # Gas thresholds (Arbitrum - adjust for other chains)
+  thresholds:
+    normal_gwei: 1.2      # Below this = safe to trade
+    elevated_gwei: 2.0    # Above this = warnings
+    high_gwei: 3.0        # Above this = STOP trading
+    critical_gwei: 5.0    # Above this = KILL-SWITCH
+  
+  # Actions
+  actions:
+    stop_on_high: true     # Stop trading when gas HIGH
+    kill_on_critical: true # Trigger kill-switch when CRITICAL
+    alert_on_elevated: true # Send alert when ELEVATED
+
+# ============================================================================
+# ORACLE TRIANGULATION (Price Validation)
+# ============================================================================
+oracle_validation:
+  enabled: true
+  max_deviation_pct: 1.0  # Disable trading if sources differ >1%
+  min_sources: 2          # Require at least 2 sources
+  
+  sources:
+    chainlink:
+      enabled: true
+      feeds:
+        "ETH/USD": "0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419"
+        "BTC/USD": "0xF4030086522a5bEEa4988F8cA5B36dbC97BeE88c"
+        "USDC/USD": "0x8fFfFfd4AfB6115b954Bd326cbe7B4BA576818f6"
+    
+    pyth:
+      enabled: true
+      api_key: "${PYTH_API_KEY}"
+      endpoint: "https://hermes.pyth.network/v2/updates/price/latest"
+    
+    coinbase:
+      enabled: true
+      api_key: "${COINBASE_API_KEY}"
+      endpoint: "https://api.exchange.coinbase.com"
+
+# ============================================================================
+# MEV PROTECTION (Private Relays)
+# ============================================================================
+mev_protection:
+  enabled: true
+  strategy: "multi_relay"  # Send to multiple relays simultaneously
+  
+  relays:
+    flashbots:
+      enabled: true
+      endpoint: "https://relay.flashbots.net"
+      auth_key: "${FLASHBOTS_AUTH_KEY}"
+      priority: 1
+    
+    bloxroute:
+      enabled: false  # Enable when API key available
+      endpoint: "https://mev.api.blxr.com"
+      api_key: "${BLOXROUTE_API_KEY}"
+      priority: 2
+    
+    eden:
+      enabled: false
+      endpoint: "https://api.edennetwork.io/v1/rpc"
+      api_key: "${EDEN_API_KEY}"
+      priority: 3
+  
+  # Bundle settings
+  bundle:
+    max_block_number_ahead: 3  # Submit for next 3 blocks
+    simulation_required: true   # Always simulate before submit
+    retry_blocks: 5             # Keep trying for 5 blocks
+    min_profitability_usd: 2.0  # Only bundle if profit >$2
+
+# ============================================================================
+# PRICE VALIDATION (Multi-Source)
+# ============================================================================
+price_validation:
+  enabled: true
+  
+  validation_rules:
+    max_spread_bps: 200          # Reject if spread >200 BPS (2%)
+    max_deviation_pct: 8.0       # Reject if >8% off consensus
+    min_confidence_pct: 70       # Require 70% consensus confidence
+    min_sources: 2               # Need at least 2 sources
+    max_slippage_pct: 0.5        # Reject if slippage >0.5%
+  
+  sources:
+    coingecko:
+      enabled: true
+      api_key: "${COINGECKO_API_KEY}"
+      tier: "pro"  # or "free"
+    
+    oneinch:
+      enabled: true
+      api_key: "${ONEINCH_API_KEY}"
+      endpoint: "https://api.1inch.dev/swap/v5.2"
+    
+    chainlink:
+      enabled: true
+    
+    onchain:
+      enabled: true
+      pools: ["uniswap_v3", "sushiswap", "balancer"]
+
+# ============================================================================
+# TRADING SUPERVISOR (Kill-Switch & Monitoring)
+# ============================================================================
+supervisor:
+  enabled: true
+  check_interval_seconds: 30
+  
+  kill_switch_triggers:
+    # Trigger if ANY condition met
+    max_drawdown_pct: 15             # Stop if 15% drawdown from peak
+    max_consecutive_losses: 5        # Stop after 5 losses in a row
+    max_session_loss_usd: 2000       # Stop if lose >$2000 in session
+    min_balance_usd: 100             # Stop if balance <$100
+    max_gas_price_gwei: 2.0          # Stop if gas >2 Gwei
+    unauthorized_pool_rebalance: true # Stop if pool rebalanced unexpectedly
+  
+  alerts:
+    telegram:
+      enabled: true
+      bot_token: "${TELEGRAM_BOT_TOKEN}"
+      chat_id: "${TELEGRAM_CHAT_ID}"
+      alert_on:
+        - trade_executed
+        - kill_switch_triggered
+        - high_gas
+        - low_balance
+        - validation_failed
+    
+    discord:
+      enabled: true
+      webhook_url: "${DISCORD_WEBHOOK_URL}"
+      alert_on:
+        - kill_switch_triggered
+        - session_summary
+        - critical_error
+
+# ============================================================================
+# TRADING PARAMETERS
+# ============================================================================
+trading:
+  # Capital management
+  capital:
+    initial_usd: 500            # Starting capital
+    max_position_usd: 3000      # Max per trade
+    max_positions: 3            # Max concurrent positions
+    reserve_gas_eth: 0.01       # Always keep for gas
+  
+  # Execution
+  execution:
+    max_slippage_bps: 50        # 0.5% max slippage
+    min_profit_usd: 2.0         # Min profit per trade
+    gas_price_multiplier: 1.15  # Add 15% buffer to gas estimates
+    confirmation_blocks: 1      # Wait for confirmations
+    timeout_seconds: 30         # Cancel if not filled in 30s
+  
+  # Opportunity filtering
+  filtering:
+    min_spread_bps: 30          # Ignore if spread <30 BPS
+    max_spread_bps: 200         # Reject if spread >200 BPS (likely false)
+    min_liquidity_usd: 10000    # Require $10k+ liquidity
+    max_pool_impact_pct: 1.0    # Max 1% price impact
+  
+  # Intelligence layers
+  intelligence:
+    mcp_enabled: true
+    mcp_min_score: 70           # Require MCP score ≥70
+    
+    swarm_enabled: true
+    swarm_min_consensus_pct: 70 # Require 70% agent agreement
+    
+    price_validator_enabled: true
+    oracle_validator_enabled: true
+
+# ============================================================================
+# DEX CONFIGURATION
+# ============================================================================
+dexes:
+  uniswap_v3:
+    enabled: true
+    router: "0xE592427A0AEce92De3Edee1F18E0157C05861564"
+    quoter: "0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6"
+    factory: "0x1F98431c8aD98523631AE4a59f267346ea31F984"
+    fee_tiers: [500, 3000, 10000]  # 0.05%, 0.3%, 1%
+  
+  sushiswap:
+    enabled: true
+    router: "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F"
+    factory: "0xC0AEe478e3658e2610c5F7A4A2E1777cE9e4f2Ac"
+  
+  balancer:
+    enabled: false  # Enable when needed
+    vault: "0xBA12222222228d8Ba445958a75a0704d566BF2C8"
+  
+  curve:
+    enabled: false
+    registry: "0x90E00ACe148ca3b23Ac1bC8C240C2a7Dd9c2d7f5"
+
+# ============================================================================
+# LOGGING & COMPLIANCE
+# ============================================================================
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR
+  
+  trade_logging:
+    enabled: true
+    log_file: "logs/trades.jsonl"  # JSON Lines format
+    fields:
+      - timestamp
+      - tx_hash
+      - block_number
+      - wallet_address
+      - dex_from
+      - dex_to
+      - token_in
+      - token_out
+      - amount_in
+      - amount_out
+      - expected_profit_usd
+      - actual_profit_usd
+      - gas_cost_eth
+      - slippage_bps
+      - execution_time_ms
+      - mcp_score
+      - swarm_consensus
+      - validation_status
+  
+  compliance:
+    enabled: true
+    tax_reporting: true
+    audit_trail: true
+    retention_days: 365
+
+# ============================================================================
+# TESTING & SAFETY
+# ============================================================================
+safety:
+  # Pre-flight checks
+  pre_flight_tests:
+    - rpc_connectivity
+    - wallet_balances
+    - gas_price_reasonable
+    - oracle_consensus
+    - dex_liquidity
+    - flashbots_auth
+    - telegram_alerts
+    - discord_alerts
+    - price_feed_freshness
+    - kill_switch_functional
+  
+  # Emergency controls
+  emergency:
+    manual_override_enabled: true
+    require_restart_after_kill: true
+    cooldown_after_loss_minutes: 30
+    max_daily_trades: 100
+  
+  # Testnet validation
+  testnet:
+    required_before_live: true
+    min_test_duration_minutes: 60
+    min_test_trades: 20
+    success_rate_threshold: 75
+
+# ============================================================================
+# PERFORMANCE MONITORING
+# ============================================================================
+monitoring:
+  metrics:
+    - total_trades
+    - win_rate
+    - avg_profit_per_trade
+    - total_profit_usd
+    - total_gas_cost_eth
+    - net_profit_usd
+    - sharpe_ratio
+    - max_drawdown_pct
+    - avg_execution_time_ms
+    - rpc_uptime_pct
+    - validation_pass_rate
+  
+  dashboards:
+    jupyter_notebook: true
+    web_dashboard: false  # Future: Gradio/Streamlit
+    cli_status: true
+  
+  export:
+    csv_enabled: true
+    csv_interval_minutes: 60
+    csv_path: "exports/performance_{timestamp}.csv"

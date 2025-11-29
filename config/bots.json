@@ -1,0 +1,287 @@
+{
+  "schema_version": "2.0.0",
+  "last_updated": "2025-11-25T00:00:00Z",
+  "bots": [
+    {
+      "id": "BOT_GRID_MATIC_USDC_V1",
+      "version": 1,
+      "parent_bot_id": null,
+      "lineage_label": "GRID_MATIC_CORE",
+      "strategy_family": "grid",
+      "status": "ON",
+      "mode": "CORE_PRODUCTION",
+      "execution_mode": "LIVE",
+      "account_group": "CEX_MAIN",
+      "base_asset": "MATIC",
+      "quote_asset": "USDC",
+      "venue": "BINANCE_SPOT",
+      "timeframe": "5m",
+      "max_notional": 5000,
+      "max_leverage": 1.0,
+      "target_capital_fraction": 0.12,
+      "risk": {
+        "max_drawdown": 0.10,
+        "intraday_dd_limit": 0.04,
+        "daily_dd_limit": 0.06,
+        "kill_switch_enabled": true
+      },
+      "params": {
+        "grid_levels": 24,
+        "grid_width_type": "volatility_scaled",
+        "grid_width_min_bps": 40,
+        "grid_width_max_bps": 180,
+        "inventory_target": 0.5,
+        "rebalance_threshold": 0.10,
+        "min_spread_to_trade_bps": 15,
+        "max_orders_per_min": 30,
+        "fee_bps": 7
+      },
+      "designed_for_regimes": ["trend", "chop"],
+      "forbidden_regimes": ["crash"],
+      "regime_profile": {
+        "volatility_bucket": "LOW_MEDIUM",
+        "event_sensitivity": "HIGH",
+        "time_windows_utc": [
+          { "start": "00:00", "end": "23:59" }
+        ]
+      },
+      "experiment": {
+        "cohort": "GRID_MATIC_LAB_001",
+        "parent_bot_id": null,
+        "hypothesis": "Baseline grid configuration for MATIC/USDC in low-to-medium volatility.",
+        "start_ts": null,
+        "end_ts": null
+      },
+      "telemetry": {
+        "label": "MATIC/USDC Grid v1",
+        "tags": ["grid", "matic", "cex", "core"],
+        "alert_channel": "telegram:@unykorn_ops"
+      }
+    },
+    {
+      "id": "BOT_GRID_MATIC_USDC_V2_WIDE",
+      "version": 2,
+      "parent_bot_id": "BOT_GRID_MATIC_USDC_V1",
+      "lineage_label": "GRID_MATIC_CORE",
+      "strategy_family": "grid",
+      "status": "ON",
+      "mode": "UNDER_REVIEW",
+      "execution_mode": "SHADOW",
+      "account_group": "CEX_MAIN",
+      "base_asset": "MATIC",
+      "quote_asset": "USDC",
+      "venue": "BINANCE_SPOT",
+      "timeframe": "5m",
+      "max_notional": 1000,
+      "max_leverage": 1.0,
+      "target_capital_fraction": 0.02,
+      "risk": {
+        "max_drawdown": 0.10,
+        "intraday_dd_limit": 0.04,
+        "daily_dd_limit": 0.06,
+        "kill_switch_enabled": true
+      },
+      "params": {
+        "grid_levels": 18,
+        "grid_width_type": "volatility_scaled",
+        "grid_width_min_bps": 80,
+        "grid_width_max_bps": 280,
+        "inventory_target": 0.5,
+        "rebalance_threshold": 0.15,
+        "min_spread_to_trade_bps": 20,
+        "max_orders_per_min": 20,
+        "fee_bps": 7
+      },
+      "designed_for_regimes": ["trend", "high_volatility"],
+      "forbidden_regimes": ["crash"],
+      "regime_profile": {
+        "volatility_bucket": "MEDIUM_HIGH",
+        "event_sensitivity": "MEDIUM",
+        "time_windows_utc": [
+          { "start": "06:00", "end": "20:00" }
+        ]
+      },
+      "experiment": {
+        "cohort": "GRID_MATIC_LAB_001",
+        "parent_bot_id": "BOT_GRID_MATIC_USDC_V1",
+        "hypothesis": "Wider grid spacing in high vol may improve risk-adjusted return.",
+        "start_ts": "2025-11-25T00:00:00Z",
+        "end_ts": null
+      },
+      "telemetry": {
+        "label": "MATIC/USDC Grid v2 Wide Experimental",
+        "tags": ["grid", "matic", "cex", "experimental", "high_vol"],
+        "alert_channel": "telegram:@unykorn_ops"
+      }
+    },
+    {
+      "id": "BOT_MOMENTUM_BTC_USDT_V1",
+      "version": 1,
+      "parent_bot_id": null,
+      "lineage_label": "MOMENTUM_BTC_CORE",
+      "strategy_family": "momentum",
+      "status": "ON",
+      "mode": "CORE_PRODUCTION",
+      "execution_mode": "LIVE",
+      "account_group": "CEX_MAIN",
+      "base_asset": "BTC",
+      "quote_asset": "USDT",
+      "venue": "BINANCE_FUTURES",
+      "timeframe": "15m",
+      "max_notional": 50000,
+      "max_leverage": 3.0,
+      "target_capital_fraction": 0.25,
+      "risk": {
+        "max_drawdown": 0.15,
+        "intraday_dd_limit": 0.08,
+        "daily_dd_limit": 0.10,
+        "kill_switch_enabled": true
+      },
+      "params": {
+        "ema_fast": 12,
+        "ema_slow": 26,
+        "momentum_threshold": 0.003,
+        "volume_confirmation": true,
+        "min_volume_ratio": 1.5,
+        "entry_filters": ["cvd_positive", "rsi_non_extreme"],
+        "exit_strategy": "trailing_stop",
+        "stop_loss_pct": 0.02,
+        "take_profit_pct": 0.06,
+        "trailing_stop_activation": 0.03,
+        "trailing_stop_distance": 0.015
+      },
+      "designed_for_regimes": ["trend", "breakout"],
+      "forbidden_regimes": ["chop", "crash"],
+      "regime_profile": {
+        "volatility_bucket": "MEDIUM_HIGH",
+        "event_sensitivity": "HIGH",
+        "time_windows_utc": [
+          { "start": "00:00", "end": "23:59" }
+        ]
+      },
+      "experiment": {
+        "cohort": "MOMENTUM_BTC_CORE",
+        "parent_bot_id": null,
+        "hypothesis": "EMA crossover with volume confirmation captures trending moves efficiently.",
+        "start_ts": null,
+        "end_ts": null
+      },
+      "telemetry": {
+        "label": "BTC Momentum Trend Follower",
+        "tags": ["momentum", "btc", "futures", "core", "trend"],
+        "alert_channel": "telegram:@unykorn_ops"
+      }
+    },
+    {
+      "id": "BOT_SCALP_ETH_USDC_V1",
+      "version": 1,
+      "parent_bot_id": null,
+      "lineage_label": "SCALP_ETH_MICRO",
+      "strategy_family": "scalping",
+      "status": "ON",
+      "mode": "CORE_PRODUCTION",
+      "execution_mode": "LIVE",
+      "account_group": "CEX_SCALP",
+      "base_asset": "ETH",
+      "quote_asset": "USDC",
+      "venue": "COINBASE_ADVANCED",
+      "timeframe": "1m",
+      "max_notional": 10000,
+      "max_leverage": 1.0,
+      "target_capital_fraction": 0.08,
+      "risk": {
+        "max_drawdown": 0.05,
+        "intraday_dd_limit": 0.02,
+        "daily_dd_limit": 0.03,
+        "kill_switch_enabled": true
+      },
+      "params": {
+        "orderbook_levels": 10,
+        "imbalance_threshold": 0.65,
+        "min_spread_bps": 5,
+        "max_position_seconds": 180,
+        "position_size_type": "adaptive",
+        "max_orders_per_min": 60,
+        "liquidity_check": true,
+        "min_liquidity_depth": 50000,
+        "fee_bps": 5
+      },
+      "designed_for_regimes": ["chop", "low_volatility"],
+      "forbidden_regimes": ["crash", "high_volatility", "news_event"],
+      "regime_profile": {
+        "volatility_bucket": "LOW",
+        "event_sensitivity": "HIGH",
+        "time_windows_utc": [
+          { "start": "08:00", "end": "16:00" },
+          { "start": "18:00", "end": "22:00" }
+        ]
+      },
+      "experiment": {
+        "cohort": "SCALP_ETH_MICRO",
+        "parent_bot_id": null,
+        "hypothesis": "Orderbook imbalance signals provide edge in low-volatility ETH markets during liquid hours.",
+        "start_ts": null,
+        "end_ts": null
+      },
+      "telemetry": {
+        "label": "ETH Microstructure Scalper",
+        "tags": ["scalp", "eth", "cex", "core", "microstructure"],
+        "alert_channel": "telegram:@unykorn_ops"
+      }
+    },
+    {
+      "id": "BOT_ARBIT_SOL_MULTI_V1",
+      "version": 1,
+      "parent_bot_id": null,
+      "lineage_label": "ARBIT_SOL_CROSS",
+      "strategy_family": "arbitrage",
+      "status": "ON",
+      "mode": "CORE_PRODUCTION",
+      "execution_mode": "LIVE",
+      "account_group": "MULTI_VENUE",
+      "base_asset": "SOL",
+      "quote_asset": "USDT",
+      "venue": "BINANCE_SPOT,KRAKEN_SPOT,COINBASE_SPOT",
+      "timeframe": "tick",
+      "max_notional": 15000,
+      "max_leverage": 1.0,
+      "target_capital_fraction": 0.15,
+      "risk": {
+        "max_drawdown": 0.03,
+        "intraday_dd_limit": 0.01,
+        "daily_dd_limit": 0.02,
+        "kill_switch_enabled": true
+      },
+      "params": {
+        "min_profit_bps": 12,
+        "fee_adjusted": true,
+        "slippage_buffer_bps": 3,
+        "execution_timeout_ms": 500,
+        "venues": ["BINANCE_SPOT", "KRAKEN_SPOT", "COINBASE_SPOT"],
+        "rebalance_frequency_seconds": 300,
+        "max_inventory_skew": 0.20
+      },
+      "designed_for_regimes": ["any"],
+      "forbidden_regimes": ["exchange_outage", "network_congestion"],
+      "regime_profile": {
+        "volatility_bucket": "LOW_MEDIUM",
+        "event_sensitivity": "MEDIUM",
+        "time_windows_utc": [
+          { "start": "00:00", "end": "23:59" }
+        ]
+      },
+      "experiment": {
+        "cohort": "ARBIT_SOL_CROSS",
+        "parent_bot_id": null,
+        "hypothesis": "Cross-venue SOL arbitrage maintains positive expectancy across market conditions.",
+        "start_ts": null,
+        "end_ts": null
+      },
+      "telemetry": {
+        "label": "SOL Cross-Exchange Arbitrage",
+        "tags": ["arbitrage", "sol", "multi_venue", "core"],
+        "alert_channel": "telegram:@unykorn_ops"
+      }
+    }
+  ]
+}

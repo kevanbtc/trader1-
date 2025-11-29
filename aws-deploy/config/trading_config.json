@@ -1,0 +1,106 @@
+{
+  "system_name": "Micro Account Trading Engine",
+  "version": "2.0",
+  "account_type": "micro",
+  "capital_management": {
+    "initial_capital": 29.09,
+    "risk_per_trade_pct": 40,
+    "max_position_size_pct": 40,
+    "min_trade_size_usd": 5.0,
+    "reserve_balance_pct": 10
+  },
+  "scanning_intervals": {
+    "aggressive_hunter": {
+      "enabled": false,
+      "interval_seconds": 300,
+      "confidence_threshold": 85,
+      "description": "Ultra-fast scanner for immediate opportunities"
+    },
+    "rapid_scanner": {
+      "enabled": false,
+      "interval_seconds": 600,
+      "confidence_threshold": 85,
+      "description": "Quick momentum scanner"
+    },
+    "autonomous_trader": {
+      "enabled": true,
+      "interval_seconds": 900,
+      "confidence_threshold": 90,
+      "description": "Main trading bot - conservative"
+    },
+    "opportunity_analyzer": {
+      "enabled": false,
+      "interval_seconds": 1800,
+      "track_threshold": 70,
+      "description": "Post-mortem analysis tracker"
+    },
+    "live_tracker": {
+      "enabled": false,
+      "interval_seconds": 30,
+      "description": "Real-time price/RSI monitor (resource intensive)"
+    }
+  },
+  "position_management": {
+    "monitor_interval_seconds": 60,
+    "profit_targets": {
+      "target_1x": 100,
+      "target_2x": 200,
+      "target_5x": 500
+    },
+    "stop_loss_pct": 10,
+    "trailing_stop_enabled": false,
+    "max_hold_time_hours": 12
+  },
+  "strategy_preferences": {
+    "preferred_timeframe": "intraday",
+    "max_hold_hours": 12,
+    "exit_strategies": [
+      "2x_profit",
+      "5x_profit",
+      "stop_loss",
+      "time_limit"
+    ],
+    "scale_out_enabled": false
+  },
+  "api_settings": {
+    "cryptocompare_key": "f168377cf78600f6aa2fe2bde6bb57a6ebeb87c2f74f27e1e1e9fbfbe9e7c3aa",
+    "rate_limit_calls_per_minute": 100,
+    "rate_limit_buffer_pct": 20,
+    "retry_attempts": 3,
+    "retry_delay_seconds": 5
+  },
+  "signal_criteria": {
+    "rsi_extreme_threshold": 75,
+    "volume_spike_multiplier": 10,
+    "confidence_weights": {
+      "rsi_extreme": 30,
+      "volume_spike": 25,
+      "liquidity_shift": 20,
+      "smart_money": 20,
+      "flash_crash": 25
+    },
+    "min_signals_for_trade": 2
+  },
+  "execution_settings": {
+    "slippage_tolerance_pct": 3,
+    "gas_multiplier": 1.3,
+    "max_retries": 3,
+    "timeout_seconds": 60
+  },
+  "alerts": {
+    "console_enabled": true,
+    "audio_enabled": true,
+    "log_file_enabled": true,
+    "alert_on_confidence_above": 85
+  },
+  "data_retention": {
+    "log_retention_days": 30,
+    "trade_history_retention_days": 90,
+    "opportunity_analysis_retention_days": 14
+  },
+  "dashboard": {
+    "auto_refresh_seconds": 60,
+    "show_last_n_trades": 10,
+    "show_last_n_logs": 20
+  }
+}
