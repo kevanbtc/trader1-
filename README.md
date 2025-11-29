@@ -6,14 +6,16 @@ A professional, senior-engineered Kraken CEX microstructure trading system. This
 
 ## Table of Contents
 - Overview
-- Features
-- Architecture
+- Quick Start
+- Features built so far
+- Architecture & Components
 - Flow Maps & Diagrams
-- Getting Started
-- Configuration
+- Runtime Modes
+- Configuration (.env and JSON/YAML)
 - Run Guides
-- Logs & Telemetry
-- Security & Safety
+- Logging & Telemetry
+- CI/CD & Docs Site
+- Safety, Limits, and Minimums
 - License
 - CI Status
 
@@ -24,13 +26,28 @@ This system focuses on Kraken exchange live trading, with microstructure signals
 - Order book imbalance
 - Adaptive momentum
 
-## Features
-- Kraken-only live trading bot with balance verification
-- Agents for scanning, risk, execution, supervision
-- Config-driven via `.env` and `config/` files
-- Logging to `logs/` and state in `state/`
+## Quick Start
+- Python 3.10+
+- Create `.venv` and install `requirements.txt`
+- Populate `.env` with `KRAKEN_API_KEY/SECRET`
+- Start a short live verification:
+  ```
+  .\.venv\Scripts\python.exe .\kraken_live_trader_v2.py 1800 --live
+  ```
 
-## Architecture
+## Features built so far
+- Kraken-only live trading bot with correct account verification banner (private `/Balance`)
+- Accurate Kraken pair mapping (BTC→XBT, etc.) and enabled pairs via `.env`
+- Opportunity scanner: premium gap, spread compression, adaptive momentum, orderbook imbalance
+- Holdings-aware filters (BUYs respect minimums/capital; SELLs only if held)
+- Minimum order enforcement aligned with Kraken constraints
+- Robust `.env` loading and runtime parameterization
+- MkDocs docs site (Material theme) with architecture/flow diagrams
+- CI: Lint + Python syntax checks
+- Docs auto-publish via GitHub Pages (workflow added)
+- Logs: session summaries, errors, and an opportunity ledger; live viewers included
+
+## Architecture & Components
 ```mermaid
 flowchart TD
   A[Start] --> B[Load .env]
@@ -51,6 +68,10 @@ flowchart TD
 - `config/`: JSON/YAML configuration files
 - `logs/`: Session logs
 
+### Runtime Modes
+- Paper (simulation): no real orders; logs opportunities
+- Live: authenticates to Kraken, executes orders within minimums and risk filters
+
 ## Flow Maps & Diagrams
 ```mermaid
 sequenceDiagram
@@ -67,16 +88,13 @@ sequenceDiagram
   Trader->>logs: write session JSON
 ```
 
-## Getting Started
-- Python 3.10+
-- Create `.venv` and install `requirements.txt`
-- Populate `.env` with `KRAKEN_API_KEY/SECRET`
-
-## Configuration
+## Configuration (.env and JSON/YAML)
 Key `.env` entries:
 - `KRAKEN_API_KEY`, `KRAKEN_API_SECRET`
 - `KRAKEN_ENABLED_PAIRS=XRP`
 - `KRAKEN_TRADE_BUFFER=1.08`
+Optional training signals:
+- `MIN_PROFIT_USD`, `MIN_POSITION_USD`, `MAX_POSITION_USD`
 
 ## Run Guides
 - Paper mode:
@@ -88,13 +106,20 @@ Key `.env` entries:
   .\.venv\Scripts\python.exe .\kraken_live_trader_v2.py 1800 --live
   ```
 
-## Logs & Telemetry
+## Logging & Telemetry
 - `logs/session_*.json` contains session summary
-- Console shows scans, signals, executions
+- `logs/error_*.log` contains recent errors if any
+- `watch_ledger.py` and `live_trading_viewer.py` provide live visualization
 
-## Security & Safety
-- Keys are loaded from `.env`
-- Avoid committing secrets; `.gitignore` excludes sensitive files
+## CI/CD & Docs Site
+- GitHub Actions CI (`.github/workflows/ci.yml`) runs lint and Python syntax checks.
+- GitHub Pages deploy (`.github/workflows/pages.yml`) builds MkDocs and publishes the site.
+- `mkdocs.yml` at repo root configures the docs site; content in `docs/` folder.
+
+## Safety, Limits, and Minimums
+- Respect Kraken minimum order sizes (BUYs filtered if capital below minimum).
+- SELLs only for held assets; balance banner confirms holdings.
+- Use training thresholds cautiously; small profits may be negative after fees.
 
 ## CI Status
 GitHub Actions CI runs lint and a syntax check on every push/PR to `main`.
