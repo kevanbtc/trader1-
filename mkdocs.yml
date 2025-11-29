@@ -1,0 +1,8 @@
+site_name: trader1- Docs
+repo_name: trader1-
+docs_dir: docs
+site_dir: site
+nav:
+  - Home: index.md
+theme:
+  name: material
