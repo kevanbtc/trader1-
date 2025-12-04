@@ -13,7 +13,7 @@
 
 ---
 
-[📖 Documentation](#-documentation) •
+[🎯 Overview](#-overview) •
 [🚀 Quick Start](#-quick-start) •
 [⚙️ Configuration](#%EF%B8%8F-configuration) •
 [📊 Architecture](#-architecture--components)
