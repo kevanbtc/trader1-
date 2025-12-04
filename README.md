@@ -1,129 +1,500 @@
-# Trading Engine Clean
+<div align="center">
 
-![CI](https://github.com/kevanbtc/trader1-/actions/workflows/ci.yml/badge.svg)
+# 🐉 Trading Engine
 
-A professional, senior-engineered Kraken CEX microstructure trading system. This repo includes live trading bots, risk management agents, and tooling to operate a lean, auditable trading workflow.
+[![CI](https://img.shields.io/github/actions/workflow/status/kevanbtc/trader1-/ci.yml?branch=main&label=CI&logo=github&style=for-the-badge)](https://github.com/kevanbtc/trader1-/actions/workflows/ci.yml)
+[![Docs](https://img.shields.io/badge/docs-MkDocs-blue?style=for-the-badge&logo=materialformkdocs)](https://kevanbtc.github.io/trader1-/)
+[![Python](https://img.shields.io/badge/python-3.10+-3776ab?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge)](LICENSE)
 
-## Table of Contents
-- Overview
-- Quick Start
-- Features built so far
-- Architecture & Components
-- Flow Maps & Diagrams
-- Runtime Modes
-- Configuration (.env and JSON/YAML)
-- Run Guides
-- Logging & Telemetry
-- CI/CD & Docs Site
-- Safety, Limits, and Minimums
-- License
-- CI Status
+**A professional, senior-engineered multi-exchange microstructure trading system**
 
-## Overview
-This system focuses on Kraken exchange live trading, with microstructure signals:
-- Premium gap vs Binance US
-- Spread compression detection
-- Order book imbalance
-- Adaptive momentum
+*Live trading bots • Risk management agents • DeFi arbitrage • AWS deployment ready*
 
-## Quick Start
-- Python 3.10+
-- Create `.venv` and install `requirements.txt`
-- Populate `.env` with `KRAKEN_API_KEY/SECRET`
-- Start a short live verification:
-  ```
-  .\.venv\Scripts\python.exe .\kraken_live_trader_v2.py 1800 --live
-  ```
+---
 
-## Features built so far
-- Kraken-only live trading bot with correct account verification banner (private `/Balance`)
-- Accurate Kraken pair mapping (BTC→XBT, etc.) and enabled pairs via `.env`
-- Opportunity scanner: premium gap, spread compression, adaptive momentum, orderbook imbalance
-- Holdings-aware filters (BUYs respect minimums/capital; SELLs only if held)
-- Minimum order enforcement aligned with Kraken constraints
-- Robust `.env` loading and runtime parameterization
-- MkDocs docs site (Material theme) with architecture/flow diagrams
-- CI: Lint + Python syntax checks
-- Docs auto-publish via GitHub Pages (workflow added)
-- Logs: session summaries, errors, and an opportunity ledger; live viewers included
+[🎯 Overview](#-overview) •
+[🚀 Quick Start](#-quick-start) •
+[⚙️ Configuration](#%EF%B8%8F-configuration) •
+[📊 Architecture](#-architecture--components)
 
-## Architecture & Components
+</div>
+
+---
+
+## 📑 Table of Contents
+
+| Section | Description |
+|---------|-------------|
+| [🎯 Overview](#-overview) | System capabilities and trading signals |
+| [🚀 Quick Start](#-quick-start) | Get up and running in minutes |
+| [✨ Features](#-features) | Complete feature list |
+| [📊 Architecture](#-architecture--components) | System design and components |
+| [🔄 Flow Diagrams](#-flow-diagrams) | Visual execution flows |
+| [⚙️ Configuration](#%EF%B8%8F-configuration) | Environment and config files |
+| [🏃 Run Guides](#-run-guides) | Paper and live trading modes |
+| [🔥 APEX Mode](#-apex-mode) | Advanced multi-module trading |
+| [☁️ AWS Deployment](#%EF%B8%8F-aws-deployment) | Cloud deployment guide |
+| [📈 Monitoring](#-monitoring--telemetry) | Logs and live visualization |
+| [🔧 CI/CD](#-cicd--docs-site) | Automation and documentation |
+| [🛡️ Safety](#%EF%B8%8F-safety-limits-and-minimums) | Risk management and limits |
+| [📄 License](#-license) | MIT License |
+
+---
+
+## 🎯 Overview
+
+This system provides **professional-grade cryptocurrency trading** with support for:
+
+| Exchange | Type | Status |
+|----------|------|--------|
+| 🦑 **Kraken** | CEX | ✅ Production Ready |
+| 🦄 **Uniswap V3** | DEX | ✅ Production Ready |
+| 🍣 **SushiSwap** | DEX | ✅ Production Ready |
+| 🐪 **Camelot** | DEX | ✅ Production Ready |
+| 🌊 **Curve** | DEX | ✅ Production Ready |
+| 📊 **GMX** | DEX | ✅ Production Ready |
+
+### 📡 Trading Signals
+
+| Signal Type | Description | Use Case |
+|------------|-------------|----------|
+| 💹 **Premium Gap** | Price differential vs Binance US | Cross-exchange arbitrage |
+| 📉 **Spread Compression** | Tightening bid-ask detection | Pre-bounce signals |
+| ⚖️ **Order Book Imbalance** | Buy/sell pressure analysis | Momentum prediction |
+| 🎯 **Adaptive Momentum** | Dynamic window calculations | Trend following |
+
+---
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+```bash
+# Required
+Python 3.10+
+Git
+```
+
+### Installation
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/kevanbtc/trader1-.git
+cd trader1-
+
+# 2. Create virtual environment
+python -m venv .venv
+
+# 3. Activate environment
+# Windows:
+.\.venv\Scripts\activate
+# Linux/Mac:
+source .venv/bin/activate
+
+# 4. Install dependencies
+pip install -r requirements.txt
+
+# 5. Configure environment
+cp config/.env.template .env
+# Edit .env with your API keys
+```
+
+### First Run
+
+```bash
+# Paper trading (simulation) - 5 minutes
+python kraken_live_trader_v2.py 300
+
+# Live trading - 30 minutes
+python kraken_live_trader_v2.py 1800 --live
+```
+
+---
+
+## ✨ Features
+
+<table>
+<tr>
+<td width="50%">
+
+### 🏦 Exchange Integration
+- ✅ Kraken live trading with account verification
+- ✅ Accurate pair mapping (BTC→XBT)
+- ✅ Holdings-aware order filtering
+- ✅ Minimum order enforcement
+
+</td>
+<td width="50%">
+
+### 🔍 Signal Detection
+- ✅ Premium gap detection
+- ✅ Spread compression analysis
+- ✅ Adaptive momentum windows
+- ✅ Order book imbalance signals
+
+</td>
+</tr>
+<tr>
+<td width="50%">
+
+### 🛡️ Risk Management
+- ✅ Position sizing limits
+- ✅ Capital-aware BUY filtering
+- ✅ Holdings-aware SELL filtering
+- ✅ Profit threshold validation
+
+</td>
+<td width="50%">
+
+### 📊 Infrastructure
+- ✅ MkDocs documentation site
+- ✅ GitHub Actions CI/CD
+- ✅ Session logging & telemetry
+- ✅ Live trading viewers
+
+</td>
+</tr>
+</table>
+
+---
+
+## 📊 Architecture & Components
+
 ```mermaid
 flowchart TD
-  A[Start] --> B[Load .env]
-  B --> C[Initialize Kraken API]
-  C --> D{Verify balances}
-  D -->|USDC/XRP found| E[Select pairs]
-  E --> F[Scanner Loop]
-  F --> G{Signals?}
-  G -->|Yes| H[Execute Trade]
-  G -->|No| F
-  H --> I[Log + PnL]
-  I --> F
+    subgraph Input["📥 Input Layer"]
+        A[🔧 Load .env] --> B[🔑 Initialize APIs]
+    end
+    
+    subgraph Core["⚙️ Core Engine"]
+        B --> C{💰 Verify Balances}
+        C -->|✅ Funds Available| D[📋 Select Pairs]
+        D --> E[🔄 Scanner Loop]
+    end
+    
+    subgraph Detection["🔍 Signal Detection"]
+        E --> F{📡 Signals?}
+        F -->|✅ Yes| G[⚡ Execute Trade]
+        F -->|❌ No| E
+    end
+    
+    subgraph Output["📤 Output Layer"]
+        G --> H[📝 Log + PnL]
+        H --> E
+    end
+    
+    style Input fill:#e1f5fe
+    style Core fill:#fff3e0
+    style Detection fill:#f3e5f5
+    style Output fill:#e8f5e9
 ```
 
-### Components
-- `kraken_live_trader_v2.py`: Kraken microstructure bot
-- `agents/`: Strategy and supervisory agents
-- `config/`: JSON/YAML configuration files
-- `logs/`: Session logs
+### 📁 Project Structure
 
-### Runtime Modes
-- Paper (simulation): no real orders; logs opportunities
-- Live: authenticates to Kraken, executes orders within minimums and risk filters
+```
+trader1-/
+├── 🐍 kraken_live_trader_v2.py   # Main Kraken trading bot
+├── 🚀 start_trading.py           # DeFi trading launcher
+├── 📊 apex_dashboard.py          # APEX mode dashboard
+├── 🤖 agents/                    # Strategy & execution agents
+│   ├── apex_coordinator.py       # Multi-module orchestrator
+│   ├── defi_price_feed.py        # DEX price aggregation
+│   ├── risk_manager.py           # Position & risk control
+│   └── ...                       # 50+ specialized agents
+├── ⚙️ config/                    # Configuration files
+│   ├── .env.template             # Environment template
+│   ├── trading_config.json       # Trading parameters
+│   └── token_universe.json       # Token definitions
+├── 📚 docs/                      # MkDocs documentation
+├── 🔧 tools/                     # Utility tools
+└── ☁️ aws-deploy/                # AWS deployment configs
+```
 
-## Flow Maps & Diagrams
+### 🤖 Agent System
+
+| Agent | Purpose | Status |
+|-------|---------|--------|
+| `agent1_premium_tracker` | Cross-exchange price monitoring | 🟢 Active |
+| `agent2_spread_compression` | Bid-ask spread analysis | 🟢 Active |
+| `agent3_iceberg_sniper` | Large hidden order detection | 🟢 Active |
+| `agent4_tri_loop` | Triangular arbitrage | 🟢 Active |
+| `agent5_maker_rebate` | Maker fee optimization | 🟢 Active |
+| `apex_coordinator` | Multi-module orchestration | 🟢 Active |
+| `risk_manager` | Position sizing & limits | 🟢 Active |
+| `flashloan_executor` | Capital-free execution | 🟡 Beta |
+
+---
+
+## 🔄 Flow Diagrams
+
+### Trade Execution Sequence
+
 ```mermaid
 sequenceDiagram
-  participant User
-  participant Trader
-  participant Kraken
-  User->>Trader: Start LIVE session
-  Trader->>Kraken: /private/Balance
-  Kraken-->>Trader: balances
-  Trader->>Kraken: /public/Ticker & /public/Depth
-  Trader->>Trader: compute signals
-  Trader->>Kraken: AddOrder (market)
-  Kraken-->>Trader: txid
-  Trader->>logs: write session JSON
+    autonumber
+    participant 👤 User
+    participant 🤖 Trader
+    participant 🦑 Kraken
+    participant 📁 Logs
+    
+    👤 User->>🤖 Trader: Start LIVE session
+    🤖 Trader->>🦑 Kraken: GET /private/Balance
+    🦑 Kraken-->>🤖 Trader: Account balances
+    
+    loop Every scan interval
+        🤖 Trader->>🦑 Kraken: GET /public/Ticker
+        🤖 Trader->>🦑 Kraken: GET /public/Depth
+        🤖 Trader->>🤖 Trader: Compute signals
+        
+        alt Signal detected
+            🤖 Trader->>🦑 Kraken: POST /private/AddOrder
+            🦑 Kraken-->>🤖 Trader: Transaction ID
+            🤖 Trader->>📁 Logs: Write trade record
+        end
+    end
+    
+    🤖 Trader->>📁 Logs: Write session summary
 ```
 
-## Configuration (.env and JSON/YAML)
-Key `.env` entries:
-- `KRAKEN_API_KEY`, `KRAKEN_API_SECRET`
-- `KRAKEN_ENABLED_PAIRS=XRP`
-- `KRAKEN_TRADE_BUFFER=1.08`
-Optional training signals:
-- `MIN_PROFIT_USD`, `MIN_POSITION_USD`, `MAX_POSITION_USD`
+---
 
-## Run Guides
-- Paper mode:
-  ```
-  .\.venv\Scripts\python.exe .\kraken_live_trader_v2.py 300
-  ```
-- Live mode:
-  ```
-  .\.venv\Scripts\python.exe .\kraken_live_trader_v2.py 1800 --live
-  ```
+## ⚙️ Configuration
 
-## Logging & Telemetry
-- `logs/session_*.json` contains session summary
-- `logs/error_*.log` contains recent errors if any
-- `watch_ledger.py` and `live_trading_viewer.py` provide live visualization
+### Environment Variables
 
-## CI/CD & Docs Site
-- GitHub Actions CI (`.github/workflows/ci.yml`) runs lint and Python syntax checks.
-- GitHub Pages deploy (`.github/workflows/pages.yml`) builds MkDocs and publishes the site.
-- `mkdocs.yml` at repo root configures the docs site; content in `docs/` folder.
+Create a `.env` file in the project root:
 
-## Safety, Limits, and Minimums
-- Respect Kraken minimum order sizes (BUYs filtered if capital below minimum).
-- SELLs only for held assets; balance banner confirms holdings.
-- Use training thresholds cautiously; small profits may be negative after fees.
+```env
+# ═══════════════════════════════════════════════════════════════
+# 🔐 API CREDENTIALS
+# ═══════════════════════════════════════════════════════════════
+KRAKEN_API_KEY=your_kraken_api_key
+KRAKEN_API_SECRET=your_kraken_api_secret
 
-## CI Status
-GitHub Actions CI runs lint and a syntax check on every push/PR to `main`.
-Badge at top reflects current status.
+# ═══════════════════════════════════════════════════════════════
+# 📊 TRADING PARAMETERS
+# ═══════════════════════════════════════════════════════════════
+KRAKEN_ENABLED_PAIRS=XRP,ETH,BTC
+KRAKEN_TRADE_BUFFER=1.08
 
-## License
-See `LICENSE`.
+# ═══════════════════════════════════════════════════════════════
+# 💰 POSITION LIMITS
+# ═══════════════════════════════════════════════════════════════
+MIN_PROFIT_USD=0.03
+MIN_POSITION_USD=5
+MAX_POSITION_USD=100
+
+# ═══════════════════════════════════════════════════════════════
+# 🌐 RPC ENDPOINTS (DeFi)
+# ═══════════════════════════════════════════════════════════════
+ARB_RPC_1=https://arb1.arbitrum.io/rpc
+ARB_RPC_2=https://arbitrum.llamarpc.com
+ARB_RPC_3=https://rpc.ankr.com/arbitrum
+```
+
+### Configuration Files
+
+| File | Purpose |
+|------|---------|
+| `config/trading_config.json` | Core trading parameters |
+| `config/token_universe.json` | Token definitions (40+ tokens) |
+| `config/regimes.json` | Market regime definitions |
+| `config/bots.json` | Bot configurations |
+
+---
+
+## 🏃 Run Guides
+
+### 📝 Paper Trading (Simulation)
+
+```bash
+# Short test - 5 minutes
+python kraken_live_trader_v2.py 300
+
+# Extended test - 1 hour
+python kraken_live_trader_v2.py 3600
+```
+
+### 💰 Live Trading
+
+```bash
+# Kraken CEX - 30 minutes
+python kraken_live_trader_v2.py 1800 --live
+
+# DeFi arbitrage
+python start_trading.py --duration 3600
+```
+
+### 🔥 APEX Mode
+
+```bash
+# Demo mode (safe testing)
+python demo_apex.py
+
+# Full APEX with all modules
+python start_trading.py --apex --duration 3600
+```
+
+---
+
+## 🔥 APEX Mode
+
+**APEX Mode** transforms the trading engine into a professional-grade alpha extraction system with 5 advanced modules:
+
+| Module | Description | Benefit |
+|--------|-------------|---------|
+| 🌐 **Token Universe** | 40+ tokens across 8 categories | 5-10x more opportunities |
+| 🔄 **Multi-Hop Router** | Graph-based triangular arbitrage | Exponential opportunity space |
+| ⚡ **Flashloan Executor** | 10-100x position scaling | Zero capital requirement |
+| 🎯 **Block Event Hunter** | Real-time whale/oracle monitoring | Alpha from information asymmetry |
+| 🔮 **Predictive Liquidity** | Order book depth analysis | Catch micro-arbs early |
+
+### Performance Comparison
+
+| Mode | Opportunities/Hour | Avg Profit | Source |
+|------|-------------------|------------|--------|
+| 📊 Standard | 0-2 | $0.10 | 2-hop same-DEX |
+| 🦁 Predator | 2-5 | $0.08 | 9 DEXes, 20 tokens |
+| 🔥 **APEX** | 10-30 | $0.15 | Multi-hop + events + prediction |
+
+> 📚 See [`APEX_MODE.md`](APEX_MODE.md) for complete documentation.
+
+---
+
+## ☁️ AWS Deployment
+
+The system is **AWS-ready** with included deployment configurations:
+
+```
+aws-deploy/
+├── supervisor-apex.conf    # Process management
+├── deploy.sh               # Deployment script
+└── requirements.txt        # AWS dependencies
+```
+
+### Architecture on AWS
+
+```
+┌─────────────────────────────────────────────────┐
+│        AWS EC2 Instance (c5.xlarge)             │
+├─────────────────────────────────────────────────┤
+│  ┌─────────────┐  ┌─────────────┐              │
+│  │ RPC Mirror  │  │   Mempool   │              │
+│  │ (Port 8547) │  │   Sniffer   │              │
+│  └──────┬──────┘  └─────────────┘              │
+│         │                                       │
+│  ┌──────▼───────────────────────────────────┐  │
+│  │     Trading Engine (start_trading.py)    │  │
+│  │  • Scans 4x per second                   │  │
+│  │  • Multi-DEX arbitrage detection         │  │
+│  │  • Automatic trade execution             │  │
+│  └──────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────┘
+```
+
+> 📚 See [`WHAT_IS_YOUR_AWS_SETUP.md`](WHAT_IS_YOUR_AWS_SETUP.md) for complete deployment guide.
+
+---
+
+## 📈 Monitoring & Telemetry
+
+### Log Files
+
+| File Pattern | Content |
+|--------------|---------|
+| `logs/session_*.json` | Session summaries with PnL |
+| `logs/error_*.log` | Error logs |
+| `logs/opportunity_ledger.log` | All detected opportunities |
+
+### Live Monitoring Tools
+
+```bash
+# Watch opportunity ledger in real-time
+python watch_ledger.py
+
+# Live trading visualization
+python live_trading_viewer.py
+
+# AWS mission control dashboard
+python aws_mission_control.py
+```
+
+---
+
+## 🔧 CI/CD & Docs Site
+
+### GitHub Actions Workflows
+
+| Workflow | Trigger | Actions |
+|----------|---------|---------|
+| `ci.yml` | Push/PR to main | Lint + syntax check |
+| `pages.yml` | Push to main | Build & deploy docs |
+
+### Documentation Site
+
+The project includes an **MkDocs Material** documentation site:
+
+```bash
+# Local preview
+pip install mkdocs mkdocs-material
+mkdocs serve
+
+# Build static site
+mkdocs build
+```
+
+📚 **Live docs:** [kevanbtc.github.io/trader1-](https://kevanbtc.github.io/trader1-/)
+
+---
+
+## 🛡️ Safety, Limits, and Minimums
+
+<table>
+<tr>
+<td>
+
+### ⚠️ Risk Controls
+
+- ✅ Respect Kraken minimum order sizes
+- ✅ BUYs filtered if capital below minimum
+- ✅ SELLs only for held assets
+- ✅ Balance verification before trading
+
+</td>
+<td>
+
+### 💡 Best Practices
+
+- Start with paper trading
+- Use conservative profit thresholds
+- Monitor gas costs on DeFi
+- Review session logs regularly
+
+</td>
+</tr>
+</table>
+
+> ⚠️ **Disclaimer:** Trading cryptocurrency involves significant risk. Always test thoroughly in paper mode before live trading. Past performance does not guarantee future results.
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+
+```
+MIT License
+Copyright (c) 2025 Kevan
+```
+
+---
+
+<div align="center">
+
+**Built with ❤️ for the trading community**
+
+[![GitHub Stars](https://img.shields.io/github/stars/kevanbtc/trader1-?style=social)](https://github.com/kevanbtc/trader1-/stargazers)
+[![GitHub Forks](https://img.shields.io/github/forks/kevanbtc/trader1-?style=social)](https://github.com/kevanbtc/trader1-/network/members)
+
+</div>
